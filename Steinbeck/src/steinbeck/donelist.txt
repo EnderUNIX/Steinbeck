@@ -1,0 +1,5 @@
+- echo problem solved with > "redirection"
+  so in scripts written there is no need to write, for example,
+     ls -al > results.txt
+  unfortunately 2> "redirection" does not work, if smt.
+  outputs to standard error.

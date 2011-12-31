@@ -1,0 +1,55 @@
+ 1. HELP CONTENT FOR STEINBECK
+
+ 1.1 Introduction
+
+  First of all, Steinbeck utilizes SSH for the underlying connection between client and server (box in which a script will be run). It uses jsch-0.1.20.jar, which is an open source pure java implementation of SSH2. For more information, see http://www.jcraft.com/jsch/.
+
+  Second of all, Steinbeck can be used to run any (see section 1.6.2) script on a (linux)unix box with SSH server while checking on-going progress and grabbing the end result at client side. Should progress checking and end result grabbing wanted to be performed automatically, scripts be better changed accordingly. (See section 1.2.1)
+ 
+ 1.2 Configuration
+
+  There is one thing that is important when configuring Steinbeck.
+
+  1.2.1 Script Adjustments for Progress Checkings and End Result Grabbing
+
+    If you want Steinbeck to show the on going progress of your remotely running scripts on remote machines, then you have to make your script to create a "progress.txt" file, which should include a progress score between 0 and 100. Normally, your script should create this file as the first thing in the current directory (i.e. "touch progress.txt"). Then once in a while, after reasonable calculations, your script should update the internals of this file with a number.
+    An example script may look like this;
+
+    sleep 5
+    echo 10 > progress.txt
+    sleep 5
+    echo 20 > progress.txt
+    sleep 5
+    echo 30 > progress.txt
+    sleep 10
+    echo 90 > progress.txt
+    sleep 5
+    ls -al
+    echo 100 > progress.txt
+
+    As you can note from the end of the file, any results should be written into results.txt before progress becomes 100. No worries tough, when grabbed, this results.txt will be renamed as {REMOTE_IP}+results.txt on the local box in your working directory. Anything that goes to stdout will be populated by Steinbeck, but not stderr!
+
+  1.2.2 Managing scripts
+
+    Under the Manage menu item, you can choose Scripts sub-item in order to add, remove any scripts that you wanted to execute remotely. That is to say, from this menu, you will choose the script files and these files will be added to the Steinbeck database (a simple xml file). Under the hood, files you have chosen will be copied to the Steinbeck's directory with a current date. Description for the selected script will be grabbed from the second line of the script file (if exists).
+
+ 1.3 Scan
+
+  After you handle Configuration part, then in order to add|edit|remove any sessions you have to use Scan menu item. This should be straightforward. But one important thing to note is this, when you add or edit a session, (and pressing Done button), a connection test will take place to remote box. Any errors (authentication, connection) can be tackled here. 
+
+ 1.4 Run
+
+  You can start running scripts by using Run menu item, or by using the Start button. This will open another window having progress bars updating (if you have configured scripts!). You can stop running sessions or when they are all done, a pop-up message will appear (Again this is possible if your scripts are configured properly). See (section 1.2.1)
+
+ 1.5 Key
+
+  For a session, {IP+Username+Port+RemotePath+LocalPath} tuple is a key. So, as long as this tuple is unique, you can run a session and get response (results.txt that is).
+
+ 1.6 Troubleshooting
+
+  1.6.1 Be sure that the items below are applied to SSH server configuration file (/etc/ssh/sshd_config);
+
+  1.6.1.1 PasswordAuthentication Yes
+  1.6.1.2 PermitRootLogin Yes (if you are connecting as "root")
+
+  by Bedirhan, 07/26/2006
